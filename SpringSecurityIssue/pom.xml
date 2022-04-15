@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.testapp</groupId>
+  <artifactId>testappspring</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <packaging>war</packaging>
+
+  <name>TestappSPring</name>
+
+  <properties>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <tomeePort>8180</tomeePort>
+    <tomeeDebugPort>8000</tomeeDebugPort>
+    <tomeeAjpRedirectPort>8009</tomeeAjpRedirectPort>
+    <tomeeShutdownPort>8005</tomeeShutdownPort>
+    <tomeeHttpsPort>8280</tomeeHttpsPort>
+<!--     <tomeeKeystorePath>${basedir}/src/main/tomee/conf/.keystore</tomeeKeystorePath> -->
+    <!-- <tomeeKeystorePass>changeit</tomeeKeystorePass> -->
+    <tomee.Version>8.0.9</tomee.Version>
+    <quick.Session>true</quick.Session>
+    <tomee.Classifier>webprofile</tomee.Classifier>
+
+    <rmiPort>8099</rmiPort>
+    <pathToSettingsFile>${project.basedir}/src/main/webapp/WEB-INF/springConfig/WS</pathToSettingsFile>
+    <jwt.keystore.folder.path>${project.basedir}</jwt.keystore.folder.path>
+  </properties>
+
+  <build>
+
+    <finalName>testapp</finalName>
+
+    <plugins>
+
+      <!-- Plugin to unpack dependencies (client framework, Spring Config templates, tools) -->
+
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <!-- Always download and attach dependencies source code -->
+          <downloadSources>false</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+          <!-- Avoid type mvn eclipse:eclipse -Dwtpversion=2.0 -->
+          <wtpversion>2.0</wtpversion>
+        </configuration>
+      </plugin>
+
+
+      <!--
+      Plugin to run tomee : mvn tomee:start
+      http://tomee.apache.org/tomee-maven-plugin.html
+      -->
+      <plugin>
+        <groupId>org.apache.tomee.maven</groupId>
+        <artifactId>tomee-maven-plugin</artifactId>
+        <version>${tomee.Version}</version>
+        <configuration>
+          <tomeeVersion>${tomee.Version}</tomeeVersion>
+          <quickSession>${quickSession}</quickSession>
+          <tomeeClassifier>${tomee.Classifier}</tomeeClassifier>
+          <synchronization>
+            <!--
+              <resourcesDir>${framework.mobile.directory}</resourcesDir>
+              <resourcesDir>${basedir}/web</resourcesDir>
+              <binariesDir>${project.basedir}/target/classes</binariesDir>
+-->
+            <targetResourcesDir>${project.build.directory}/apache-tomee/webapps/${project.artifactId}</targetResourcesDir>
+            <extensions>
+              <extension>.class</extension>              <!-- if you want to update each time you build with mvn compile -->
+            </extensions>
+            <updateOnlyExtensions>
+              <updateOnlyExtension>.html</updateOnlyExtension>
+              <updateOnlyExtension>.js</updateOnlyExtension>
+              <updateOnlyExtension>.css</updateOnlyExtension>
+            </updateOnlyExtensions>
+          </synchronization>
+          <reloadOnUpdate>true</reloadOnUpdate>
+          <tomeeHttpPort>${tomeePort}</tomeeHttpPort>
+          <tomeeAjpPort>${tomeeAjpRedirectPort}</tomeeAjpPort>
+          <tomeeShutdownPort>${tomeeShutdownPort}</tomeeShutdownPort>
+<!--           <tomeeHttpsPort>${tomeeHttpsPort}</tomeeHttpsPort> -->
+<!--          <keystore>${tomeeKeystorePath}</keystore>-->
+          <!--<keystorePass>${tomeeKeystorePass}</keystorePass>-->
+
+       
+          <args>-Dfile.encoding=UTF-8 -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${tomeeDebugPort}</args>
+
+            <!-- If true, generate a zip from the configured TomEE instance -->
+          <zip>false</zip>
+        </configuration>
+
+      </plugin>
+
+    </plugins>
+
+  </build>
+  
+  <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>5.3.16</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+           <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-bom</artifactId>
+                <version>5.6.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+        </dependencies>
+    </dependencyManagement>
+
+  <dependencies>
+
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+    <scope>provided</scope>
+</dependency>
+
+<dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>9.0.59</version>
+            <scope>provided</scope>
+        </dependency>
+        
+         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-saml2-service-provider</artifactId>
+        </dependency>
+   
+    <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+  </dependencies>
+
+</project>
