@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package testapp;
 
@@ -23,33 +23,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration {
-   
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
      // @formatter:off
         System.out.println("########### FILTER CHAIN HTTP SECURTITY ########## " + http.toString());
         http.requestMatchers(matchers -> matchers.antMatchers(
               "/secured/**"))
-            .authorizeHttpRequests(authorize -> authorize.anyRequest().hasAuthority("ROLE_USER"))
-            .addFilterBefore(myFilter(), BasicAuthenticationFilter.class);
-                   
+            .authorizeHttpRequests(authorize -> authorize.anyRequest().hasAuthority("ROLE_USER"));
+
      // @formatter:on
         return http.build();
     }
 
-    @Bean
-    public Filter myFilter() {
-        return new OncePerRequestFilter() {
-            
-            @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                    FilterChain filterChain)
-                    throws ServletException, IOException {
-                System.out.println("####### My custom java configured filter #####");
-                response.setStatus(200);
-                response.getWriter().write("Custom Java configured filter reached");
-                
-            }
-        };
-    }
 }

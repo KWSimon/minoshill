@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -21,6 +22,7 @@ import javax.servlet.Filter;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -30,15 +32,22 @@ public class SecurityTest {
 	MockMvc mockMvc;
 
 	@Test
-	void publicPageAccessThenXmlSecurity() throws Exception {
+	void publicPageAccessThenOk() throws Exception {
 		this.mockMvc.perform(get("/page/page.html"))
-				.andExpect(isXmlSecurity());
+				.andExpect(status().isOk());
 	}
 
 	@Test
-	void securePageWhenAnonymousThenJavaSecurity() throws Exception {
+	void securePageWhenAnonymousThenClientError() throws Exception {
 		this.mockMvc.perform(get("/secured/secured.html"))
-				.andExpect(isJavaSecurity());
+				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
+	@WithMockUser
+	void securePageWhenAuthenticatedThenOk() throws Exception {
+		this.mockMvc.perform(get("/secured/secured.html"))
+				.andExpect(status().isOk());
 	}
 
 	private static ResultMatcher isXmlSecurity() {
