@@ -55,7 +55,7 @@ public class SecurityTest {
 		@Bean
 		MockMvc mockMvc(WebApplicationContext wac) {
 			return MockMvcBuilders.webAppContextSetup(wac)
-					.apply(springSecurity())
+					.apply(springSecurity(wac.getBean(AggregateSpringSecurityConfiguration.AGGREGATE_SPRING_SECURITY_FILTER_CHAIN_ID, Filter.class)))
 					.build();
 		}
 
