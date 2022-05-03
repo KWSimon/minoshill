@@ -12,6 +12,7 @@
 
 	<!-- The @Configuration class that creates a SecurityFilterChain -->
 	<bean id="mySecurityConfig" class="testapp.SecurityConfiguration" />
+	<bean id="aggregateConfiguration" class="testapp.AggregateSpringSecurityConfiguration" />
 
 	<!-- With this http element the SecurityFilterChain created by the SecurityConfiguration 
 		above is not present in the FilterChainProxy and the resources that it is supposed to protect are accessible.
